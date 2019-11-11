@@ -2,10 +2,10 @@
 //  Melkaneas HypnoTV      //
 //===========================//
 
-//=========OVERVIEW==========// 
-//notecard reader to list 
-//set URL from list as Prim Media URL, 
-// 
+//=========OVERVIEW==========//
+//notecard reader to list
+//set URL from list as Prim Media URL,
+//
 //restart at end of list
 //Recieves and sends triggers on channel
 //===========================//
@@ -16,7 +16,7 @@ vector color = <1.0,1.0,1.0>;
 vector color1 = <0.0,0.0,0.0>;
 integer face1 = ALL_SIDES;
 integer face = 1;
-integer counter = -1;
+integer counter = 0;
 //URL set variables
 string url;
 //TIMER set for testing purposes increase to enjoy the spirals
@@ -29,30 +29,30 @@ integer MyChannel = 666;
 // Shortened by Melkanea to read only one card
 list gOneCard;                          //the list the notecard get stored in
 string gsCardOneName = "HypnoTVlist";   //NOTECARD NAME
-string g_sNoteCardName; 
-list g_lTempLines;     
-integer g_iLine;       
+string g_sNoteCardName;
+list g_lTempLines;
+integer g_iLine;
 key g_kQuery;
 
 integer len; //testing
 
-initialize(string _action) 
+initialize(string _action)
 {
-    if (_action == "") 
+    if (_action == "")
         {
         loadNoteCard(gsCardOneName);
-        } 
+        }
     else if (_action == "finish")
         {
         integer len = llGetListLength(gOneCard);
-        } 
+        }
 }
-loadNoteCard(string _notecard ) 
+loadNoteCard(string _notecard )
 {
-    g_lTempLines = []; 
+    g_lTempLines = [];
     g_sNoteCardName = _notecard;
     g_iLine = 0;
-    g_kQuery = llGetNotecardLine(g_sNoteCardName, g_iLine); 
+    g_kQuery = llGetNotecardLine(g_sNoteCardName, g_iLine);
 }
 notecardFinished(string _notecard)
 {
@@ -60,7 +60,7 @@ notecardFinished(string _notecard)
     {
         gOneCard = g_lTempLines;
         initialize("finish");
-    }    
+    }
 }
 //end of notecard reader
 
@@ -68,48 +68,48 @@ notecardFinished(string _notecard)
 //Set Prim media to string read from list feed by notecard
 //lists start at 0, counter starts at 1 to avoid default texture to be set at counter 0 [seems dumb but it works]
 //defines the current URL based on counter
-setURLtoList(string url) 
-{        
-    string url = llList2String(gOneCard, counter); 
+setURLtoList(string url)
+{
+    string url = llList2String(gOneCard, counter);
     llOwnerSay((string)counter + " " + (string)url);
-    llSetPrimMediaParams(face, 
+    llSetPrimMediaParams(face,
         [PRIM_MEDIA_CURRENT_URL, url ] );
-        
+
 }
 
-//To get the perfect camera angle to watch the screen     
+//To get the perfect camera angle to watch the screen
 setCamFocus(string cam)
-{   
-    
-        
+{
+
+
     key uuid = llGetKey();
     list focus = llGetObjectDetails(uuid, ([ OBJECT_POS]));
     vector foc = llList2Vector(focus,0);
     rotation focrot = llGetRootRotation();
-    
+
     vector endfocus = foc * focrot ;
-    
+
     key uuid1 = llGetLinkKey(8);
     list position = llGetObjectDetails(uuid1, ([ OBJECT_POS]));
     vector pos = llList2Vector(position,0);
     rotation posrot = llGetRootRotation();
-    
+
     vector margin = <0,0,2.0>;
     vector endpos = (pos+margin) * posrot ;
- 
+
 
     llClearCameraParams();
     llSetCameraParams( [CAMERA_POSITION, endpos,
-                        CAMERA_POSITION_LOCKED,TRUE, 
+                        CAMERA_POSITION_LOCKED,TRUE,
                         CAMERA_FOCUS, endfocus ,
-                        CAMERA_FOCUS_LOCKED, TRUE , 
-                        
+                        CAMERA_FOCUS_LOCKED, TRUE ,
+
                         CAMERA_ACTIVE,1 ]);
-     
- }  
+
+ }
 
     default
-        {   
+        {
             changed(integer change)
         {
             // reset script when the owner or the inventory changed
@@ -117,95 +117,91 @@ setCamFocus(string cam)
                 llResetScript();
         }
             state_entry()
-            {   
-                
-         //       llSetColor(color1, face1);        
-                
+            {
+
+         //       llSetColor(color1, face1);
+
                llListen(MyChannel,"","","");
                 llSetPrimMediaParams(face,  //sets default prim media, disable browser menu
-                     [ PRIM_MEDIA_CURRENT_URL, ImgURL, 
-                      PRIM_MEDIA_PERMS_INTERACT,PRIM_MEDIA_PERM_NONE, 
-                      PRIM_MEDIA_PERMS_CONTROL, PRIM_MEDIA_PERM_NONE ] ); 
-                      
-                } 
+                     [ PRIM_MEDIA_CURRENT_URL, ImgURL,
+                      PRIM_MEDIA_PERMS_INTERACT,PRIM_MEDIA_PERM_NONE,
+                      PRIM_MEDIA_PERMS_CONTROL, PRIM_MEDIA_PERM_NONE ] );
+
+                }
                 listen(integer channel, string name, key id, string message)
-                {      
+                {
                 if (message == "sit!")
-                {   
+                {
                     llOwnerSay("Welcome to Melkaneas HypnoCinema");
-                    state hypno; 
-                } 
-                         
-            }
-        }    
-    state hypno
-    {       
-            state_entry()
-            {   
-                
-                initialize("");  //Notecard reader Init 
-                llRequestPermissions(llGetOwner(), 
-                PERMISSION_CONTROL_CAMERA | 0); 
-                setCamFocus("");
-                llOwnerSay("@setcam_unlock=n");  
-                llListen(MyChannel,"","","");
-                llOwnerSay("HYPNO STATE");
-                
-                
-                
-            }
-            
-            listen(integer channel, string name, key id, string message)    
-            {      
-        
-                if (message == "boo!")
-                { 
-                counterReset("");
-                
-                setURLtoList("");
-                llRegionSay(MyChannel,"buu!");
-        //test        llOwnerSay("buu!");               
+                    state hypno;
                 }
-                if (message == "baa!")
-                {
-                
-                
-                setURLtoList("");
-                llRegionSay(MyChannel,"bii!");
-        //test        llOwnerSay("bii!"); 
-                }
-                
-                 if (counter != len)
-                 {++counter;}
-            { counter == 0; } 
-            if (counter != -len)
-            {--counter; }
-            { counter == 0; }
-                
-                
-                
-                if (message == "stand!")
-                {
-                    
-                llOwnerSay("Thank You Come Again!");
-                llResetScript();
-            }   
-    }               
+
+            }
+        }
+state hypno
+{
+
+        changed(integer change)
+        {
+        if (counter == len)
+        { counter = 0; }
+        else if (counter != len)
+        {
+            }
+
+}
+        state_entry()
+        {
+
+            initialize("");  //Notecard reader Init
+            llRequestPermissions(llGetOwner(),
+            PERMISSION_CONTROL_CAMERA | 0);
+            setCamFocus("");
+            llOwnerSay("@setcam_unlock=n");
+            llListen(MyChannel,"","","");
+            llOwnerSay("HYPNO STATE");
+
+        }
+
+        listen(integer channel, string name, key id, string message)
+        {
+
+            if (message == "boo!")
+            {
+            ++counter;
+            setURLtoList("");
+            llRegionSay(MyChannel,"buu!");
+    //test        llOwnerSay("buu!");
+            }
+            if (message == "baa!")
+            {
+            --counter;
+            setURLtoList("");
+            llRegionSay(MyChannel,"bii!");
+    //test        llOwnerSay("bii!");
+            }
+            if (message == "stand!")
+            {
+
+            llOwnerSay("Thank You Come Again!");
+            llResetScript();
+        }
+}
 
     dataserver(key _query_id, string _data) //dataserver part of notecard reader
     {
-        if (_query_id == g_kQuery) 
+        if (_query_id == g_kQuery)
             {
-            if (_data != EOF) 
-                {    
+            if (_data != EOF)
+                {
                 g_lTempLines += _data;
                 ++g_iLine;
                 g_kQuery = llGetNotecardLine(g_sNoteCardName, g_iLine);
-                } 
-            else 
+                }
+            else
                 {
                 notecardFinished(g_sNoteCardName);
                 }
             }
-    }      
+    }
 }
