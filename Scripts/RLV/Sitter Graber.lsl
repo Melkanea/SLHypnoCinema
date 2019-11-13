@@ -17,24 +17,24 @@ string  locktime; // lock time in human readable format
 integer locked; // TRUE if someone is locked up
 integer sitting; // TRUE is the victim is sitting on target (checked via RLV)
 
-//melkaneas vars
-string counter;
-key owner; // This will be the new owner
+
 integer collision_total;
 
 //===================================================================================//
 debug(string txt)
 {
     // uncomment the next line to see debugging messages
-//    llSay(DEBUG_CHANNEL, "DEBUG-INFO: "+txt);
-//    llSay(DEBUG_CHANNEL, "COUNTER: "+(string)tc);
+// llSay(DEBUG_CHANNEL, "DEBUG-INFO: "+txt);
+// llSay(DEBUG_CHANNEL, "Total amount of collisions"+" "+(string)collision_total);
+
+//Spares for later
   //  llSay(DEBUG_CHANNEL, "Target-Vector: "+(string)pos);
     //llSay(DEBUG_CHANNEL, "TELEPORT: "+(string)x+"/"+(string)y+"/"+(string)z );
    // llSay(DEBUG_CHANNEL, (string)x);
    // llSay(DEBUG_CHANNEL, (string)y);
    // llSay(DEBUG_CHANNEL, (string)z);
 
-   // llSay(DEBUG_CHANNEL, "Total amount of collisions"+" "+(string)collision_total);
+
 }
 
 relay(string type,key victim,string command) //send command to relay
@@ -89,8 +89,6 @@ default
             llListen(commchan, "", victim, "");
             llVolumeDetect(TRUE);
             llSetTimerEvent(5);
-
-            llListen(RLVchan, "", llGetOwnerKey();, "" );
 
         }
         else

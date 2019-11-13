@@ -38,7 +38,7 @@ default
     touch_start(integer say)
     {
         debug(""); //if it messes up
-    llSay(0,"@tpto:" (string)x+"/"+(string)y+"/"+(string)z=force )
+    // llSay(0,"@tpto:" (string)x+"/"+(string)y+"/"+(string)z=force )
     }
     listen (integer channel, string name, key id, string msg)
     {

@@ -81,23 +81,23 @@ setCamFocus(string cam)
 {
 
 
-    key uuid = llGetKey();
+    key uuid = llGetLinkKey(2);
     list focus = llGetObjectDetails(uuid, ([ OBJECT_POS]));
     vector foc = llList2Vector(focus,0);
     rotation focrot = llGetRootRotation();
 
     vector endfocus = foc * focrot ;
 
-    key uuid1 = llGetLinkKey(8);
+    key uuid1 = llGetLinkKey(3);
     list position = llGetObjectDetails(uuid1, ([ OBJECT_POS]));
     vector pos = llList2Vector(position,0);
     rotation posrot = llGetRootRotation();
 
-    vector margin = <0,0,2.0>;
+    vector margin = <0,0,0>;
     vector endpos = (pos+margin) * posrot ;
 
 
-    llClearCameraParams();
+
     llSetCameraParams( [CAMERA_POSITION, endpos,
                         CAMERA_POSITION_LOCKED,TRUE,
                         CAMERA_FOCUS, endfocus ,
@@ -143,7 +143,7 @@ state hypno
         {
 
             initialize("");  //Notecard reader Init
-
+            llSleep(1.0);
             llRequestPermissions(llGetOwner(),
             PERMISSION_CONTROL_CAMERA | 0);
             setCamFocus("");
@@ -160,7 +160,7 @@ state hypno
                 {
             integer lenght = llGetListLength(gOneCard);
             if (counter == lenght)
-                { counter = 0;
+                { counter = 1;
                 llOwnerSay((string)lenght + " " + "Links Present");
                 }
             if (counter != lenght)
@@ -176,10 +176,10 @@ state hypno
             {
             integer lenght = llGetListLength(gOneCard);
             if (counter == -lenght)
-                { counter = 0;
+                { counter = -1;
                 llOwnerSay((string)lenght + " " + "Links Present");
                  }
-            if (counter != lenght)
+            if (counter != -lenght)
                 {
                 --counter;
                 setURLtoList("");
