@@ -21,15 +21,7 @@ integer sitting; // TRUE is the victim is sitting on target (checked via RLV)
 string counter;
 key owner; // This will be the new owner
 integer collision_total;
-integer pos;
-integer tc;
-//coordinate pharsing
-vector vec;
-float x;
-float y;
-float z;
 
-string tele_target;
 //===================================================================================//
 debug(string txt)
 {
@@ -76,32 +68,11 @@ next() //process next entry in queue
         }
     }
 }
-
-
- //=====================Melkaneas Snippet====================//
-
- teleport(string tele) //Teleport RLV
-{
-   // relay("tele", llList2Key(queue, 0), "@tpto:" (string)x+"/"+(string)y+"/"+(string)z=force );
-}
-restart(string restart)
-{
-    if (sitting == FALSE)
-    {
-        relay("restart", victim, "@unsit=n");
-        target = NULL_KEY;
-        owner = NULL_KEY;
-        llSetTimerEvent(0.0);
-        }
-}
-
-
 default
 {
     state_entry()
     {
         target = llGetKey();   //Object where to be teleported.
-        owner = llGetKey();   //Object where to be teleported.
 
         list    objectinfo = llGetObjectDetails(target, [OBJECT_NAME, OBJECT_POS]);
         if (llList2Vector(objectinfo, 1) != <0,0,0>) //check if target exists
@@ -135,19 +106,7 @@ default
 
     collision_start(integer num)
     {
-        //User and object UUIDs
-    //    list pos = llGetObjectDetails(owner, ([ OBJECT_POS]));
-    //    vector vec = llList2Vector(pos,0); //this is th vector
-        //Vector Pharsing
-    //    float x = vec.x;
-    //    float y = vec.y;
-    //    float z = vec.z;
-
-    //string tele_target ="+(string)x+/+(string)y+/+(string)z";
-
-    //    llSay(0, (string)x+"/"+(string)y+"/"+(string)z );
-
-        debug ((string)num+" collisions");
+    debug ((string)num+" collisions");
         if (!locked)
         {
             while (num)
@@ -171,11 +130,7 @@ default
 
     listen(integer chn, string name, key id, string msg)
     {
-        key tele_uuid = llGetOwnerKey(id);
-        if (tele_uuid != NULL_KEY)
-        {
-            llSay(0, (string)tele_uuid );
-        }
+
         if (chn == RLVchan) //answers from relay
         {
             list    answer = llCSV2List(msg);
@@ -226,17 +181,8 @@ default
         }
 
     }
-
-
-
-
-
-    timer()
-    {
-
-
-
-
+timer()
+{
         if (locked)
         {
             if (llGetUnixTime() >= freetime)
@@ -267,19 +213,6 @@ default
                 next();
             }
         }
-
-        integer tc;
-        if (tc++ != 10 )
-        {
-        if (tc == 10 )
-        {
-
-            teleport("");
-            tc = 0;
-            restart("");
-        }
-
-    }
 }
     sensor(integer num)
     {

@@ -19,7 +19,8 @@ debug(string info)
 {
     //debugging messages
     llSay(DEBUG_CHANNEL, "TELEPORT: "+(string)x+"/"+(string)y+"/"+(string)z );
-    llSay(DEBUG_CHANNEL, "The RTD's UUID is " + (string)id);
+
+    //llSay(DEBUG_CHANNEL, "The RTD's UUID is " + (string)id);
 
     // llSay(DEBUG_CHANNEL, "Target: "+(string)target);
     // llSay(DEBUG_CHANNEL, "lKey: "+(string)lKey);          //spare for later
@@ -31,20 +32,22 @@ default
 {
     state_entry()
     {
-        llListen(chan, "","","");    //use proper channel name
+        llListen(chan, "","","");
+
     }
     touch_start(integer say)
     {
-    //    debug(""); //if it messes up
+        debug(""); //if it messes up
+    llSay(0,"@tpto:" (string)x+"/"+(string)y+"/"+(string)z=force )
     }
     listen (integer channel, string name, key id, string msg)
     {
-        //UUID => Object Position => Vector => pharsed for @tpto
-        if (msg == "contact") //change msg later { llRegionSay(channel, "contact"); }
+
+        if (msg == "contact")
         {
-            id = llGetKey();                                    //UUID
-            list pos = llGetObjectDetails(id, ([ OBJECT_POS])); //details
-            vector vec = llList2Vector(pos,0);                  //vector
+            id = llGetKey();
+            list pos = llGetObjectDetails(id, ([ OBJECT_POS]));
+            vector vec = llList2Vector(pos,0);
             //Vector Pharsing
             x = vec.x;
             y = vec.y;
