@@ -38,9 +38,9 @@ debug(string txt)
 //    llSay(DEBUG_CHANNEL, "COUNTER: "+(string)tc);
   //  llSay(DEBUG_CHANNEL, "Target-Vector: "+(string)pos);
     //llSay(DEBUG_CHANNEL, "TELEPORT: "+(string)x+"/"+(string)y+"/"+(string)z );
-    llSay(DEBUG_CHANNEL, (string)x);
-    llSay(DEBUG_CHANNEL, (string)y);
-    llSay(DEBUG_CHANNEL, (string)z);
+   // llSay(DEBUG_CHANNEL, (string)x);
+   // llSay(DEBUG_CHANNEL, (string)y);
+   // llSay(DEBUG_CHANNEL, (string)z);
 
    // llSay(DEBUG_CHANNEL, "Total amount of collisions"+" "+(string)collision_total);
 }
@@ -82,7 +82,7 @@ next() //process next entry in queue
 
  teleport(string tele) //Teleport RLV
 {
-    relay("tele", llList2Key(queue, 0), "@tpto:"+(string)x+"/"+(string)y+"/"+(string)z=force );
+   // relay("tele", llList2Key(queue, 0), "@tpto:" (string)x+"/"+(string)y+"/"+(string)z=force );
 }
 restart(string restart)
 {
@@ -119,9 +119,8 @@ default
             llVolumeDetect(TRUE);
             llSetTimerEvent(5);
 
-            llListen(RLVchan, string x, llGetOwner(), "" );
-            llListen(RLVchan, string y, llGetOwner(), "" );
-            llListen(RLVchan, string z, llGetOwner(), "" );
+            llListen(RLVchan, "", llGetOwnerKey();, "" );
+
         }
         else
         {
@@ -146,7 +145,7 @@ default
 
     //string tele_target ="+(string)x+/+(string)y+/+(string)z";
 
-        llSay(0, (string)x+"/"+(string)y+"/"+(string)z );
+    //    llSay(0, (string)x+"/"+(string)y+"/"+(string)z );
 
         debug ((string)num+" collisions");
         if (!locked)
@@ -172,6 +171,11 @@ default
 
     listen(integer chn, string name, key id, string msg)
     {
+        key tele_uuid = llGetOwnerKey(id);
+        if (tele_uuid != NULL_KEY)
+        {
+            llSay(0, (string)tele_uuid );
+        }
         if (chn == RLVchan) //answers from relay
         {
             list    answer = llCSV2List(msg);

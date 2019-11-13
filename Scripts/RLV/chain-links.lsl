@@ -24,7 +24,8 @@ default
 {
     state_entry()
     {
-        llListen(RLVchan, "",llGetOwner(),"");
+        llListen(RLVchan, "","","");
+
 
         target = llGetKey();   //Object where to be teleported.
 
@@ -39,21 +40,22 @@ default
     }
     touch_start(integer say)
     {
-            llSetTimerEvent(5.0);
+            debug("");
+            llSetTimerEvent(5);
             }
 
     timer()
     {
-        llSay(RLVchan, (string)x);
-        llSay(RLVchan, (string)y);
-        llSay(RLVchan, (string)z);
-        llSay(DEBUG_CHANNEL, (string)x);
-        llSay(DEBUG_CHANNEL, (string)y);
-        llSay(DEBUG_CHANNEL, (string)z);
+     //   llSay(RLVchan, (string)x);
+      //  llSay(RLVchan, (string)y);
+     //   llSay(RLVchan, (string)z);
+     //   llSay(DEBUG_CHANNEL, (string)x);
+     //   llSay(DEBUG_CHANNEL, (string)y);
+     //   llSay(DEBUG_CHANNEL, (string)z);
 
 
-
-        // debug(""); //if it messes up
+        llRegionSay(RLVchan, "contact")
+         //if it messes up
     }
 
 }
