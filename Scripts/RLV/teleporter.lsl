@@ -1,7 +1,3 @@
-
-
-
-
 /* This program is free software. It comes without any warranty, to
  * the extent permitted by applicable law. You can redistribute it
  * and/or modify it under the terms of the Do What The Fuck You Want
@@ -20,12 +16,7 @@ integer sitscan = TRUE; // try to detect and lock people who sit manually (TRUE/
 integer lockseconds = 30; // time in seconds the victim will be locked to the target
 integer sleeptime = 10; // time in seconds the victim has to leave the area after being freed to avoid instant regrabbing
 // do not set sleeptime to 0!
-integer counter;
 
-vector vec;
-float x;
-float y;
-float z;
 //=======================================================================================================================//
 
 key     victim = NULL_KEY; //current victim
@@ -42,12 +33,7 @@ integer sitting; // TRUE is the victim is sitting on target (checked via RLV)
 debug(string txt)
 {
     // uncomment the next line to see debugging messages
-    llSay(DEBUG_CHANNEL, "DEBUG-INFO: "+txt);
-    llSay(DEBUG_CHANNEL, "TELEPORT: "+(string)x+"/"+(string)y+"/"+(string)z );
-    llSay(DEBUG_CHANNEL, "Target-Key: "+(string)target);
-    llSay(DEBUG_CHANNEL, "Owner-Key: "+(string)victim);
-    llSay(DEBUG_CHANNEL, "Target-Vector: "+(string)pos);
-    llSay(DEBUG_CHANNEL, "Counter: "+(string)counter);
+    //llSay(DEBUG_CHANNEL, "DEBUG-INFO: "+txt);
 }
 
 relay(string type,key victim,string command) //send command to relay
@@ -55,14 +41,37 @@ relay(string type,key victim,string command) //send command to relay
     llRegionSayTo(victim, RLVchan, type+","+(string)victim+","+command);
 }
 
+next() //process next entry in queue
+{
+    debug("next()");
+    if (llGetObjectMass(target) > targetmass) //stop here if someone is sitting on the object
+    {
+        debug("Someone is sitting");
+        queue = [];
+        return;
+    }
+    if (victim == NULL_KEY && llGetListLength(queue) > 0)
+    {
+        key this = llList2Key(queue, 0);
+        if (llVecDist(llList2Vector(llGetObjectDetails(this, [OBJECT_POS]), 0), llGetPos() ) < 10.0)
+        {
+            locked = FALSE;
+            sitting = FALSE;
+            relay("sit", llList2Key(queue, 0), "@sit:"+(string)target+"=force");
+            llSetTimerEvent(10);
+        }
+        else
+        {
+            queue = llDeleteSubList(queue, 0, 0);
+            next();
+        }
+    }
+}
+
 default
 {
     state_entry()
     {
-
-
-
-
         list    objectinfo = llGetObjectDetails(target, [OBJECT_NAME, OBJECT_POS]);
         if (llList2Vector(objectinfo, 1) != <0,0,0>) //check if target exists
         {
@@ -78,6 +87,7 @@ default
             llListen(commchan, "", victim, "");
             llVolumeDetect(TRUE);
             llSetTimerEvent(10);
+            llListen(RLVchan, "", string(coordinates), "");
         }
         else
         {
@@ -89,41 +99,9 @@ default
     {
         llResetScript();
     }
-    touch_start(integer info)
-    {
 
-
-//===================Melkaneas Triggered Teleporter=========================//
-
-    ++counter;
-
-    list pos = llGetObjectDetails(target, ([ OBJECT_POS])); //UUID to get position vector
-    vector vec = llList2Vector(pos,0); //this is the vector need to pharse it.
-
-    //vector pharsing
-    float x = vec.x;
-    float y = vec.y;
-    float z = vec.z;
-
-    if (counter == 10) {
-    llRegionSayTo(victim, RLVchan, "+(string)x+/+(string)y+/+(string)z");
-
-       llSetTimerEvent(0.0);
-       counter = 0;
-
-
-     }
-    }
     collision_start(integer num)
     {
-        //User and object UUIDs
-        key victim = llGetOwner(); //RLV User to Teleport.
-        key target = llGetKey();   //Object where to be teleported.
-
-
-
-        
-        relay("sit", llList2Key(queue, 0), "@sit:"+(string)target+"=force");
         debug ((string)num+" collisions");
         if (!locked)
         {
@@ -193,10 +171,6 @@ default
 
     timer()
     {
-
-
-
-
         if (locked)
         {
             if (llGetUnixTime() >= freetime)
