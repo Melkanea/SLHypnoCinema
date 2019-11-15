@@ -10,7 +10,7 @@ default
 
 
 
-        llSitTarget( <0.00000, 3.28426, 2.40625> , <0.00000, 0.00000, -1.00000, 0.00000> );
+        llSitTarget( <240.18490, 55.37746, 1999.70100> , <0.00000, 0.00000, -1.00000, 0.00000> );
 
        // llSitTarget(localpos , localrot );
         }
@@ -32,12 +32,11 @@ default
         }
     }
     touch_start(integer kore)
-    {
-        list local = llGetPrimitiveParams( [ PRIM_POS_LOCAL  ,  PRIM_POSITION,  PRIM_ROT_LOCAL , PRIM_ROTATION ] );
+    {  
 
 
-        integer localrot = llList2Rot(local, 3);
-        integer localpos = llList2Vector(local, 4);
+        vector localrot = llGetLocalPos();
+        rotation localpos = llGetLocalRot();
         llSay(0, (string)localpos);
         llSay(0, (string)localrot);
         }
