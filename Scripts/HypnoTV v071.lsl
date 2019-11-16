@@ -15,7 +15,7 @@ string ImgURL = "https://i.imgur.com/vcQicbO.png";
 vector color = <1.0,1.0,1.0>;
 vector color1 = <0.0,0.0,0.0>;
 integer face1 = ALL_SIDES;
-integer face = 1;
+integer face = 3;
 integer counter = 0;
 //URL set variables
 string url;
@@ -88,21 +88,19 @@ setCamFocus(string cam)
 
     vector endfocus = foc * focrot ;
 
-    key uuid1 = llGetLinkKey(8);
+    key uuid1 = llGetLinkKey(2);
     list position = llGetObjectDetails(uuid1, ([ OBJECT_POS]));
     vector pos = llList2Vector(position,0);
     rotation posrot = llGetRootRotation();
 
-    vector margin = <0,0,2.0>;
+    vector margin = <0,-1.0,2.0>;
     vector endpos = (pos+margin) * posrot ;
-
 
     llClearCameraParams();
     llSetCameraParams( [CAMERA_POSITION, endpos,
                         CAMERA_POSITION_LOCKED,TRUE,
                         CAMERA_FOCUS, endfocus ,
                         CAMERA_FOCUS_LOCKED, TRUE ,
-
                         CAMERA_ACTIVE,1 ]);
 
  }
@@ -120,9 +118,10 @@ setCamFocus(string cam)
 
          //       llSetColor(color1, face1);
 
-               llListen(MyChannel,"","","");
+                llListen(MyChannel,"","","");
                 llSetPrimMediaParams(face,  //sets default prim media, disable browser menu
                      [ PRIM_MEDIA_CURRENT_URL, ImgURL,
+                      PRIM_MEDIA_FIRST_CLICK_INTERACT, FALSE,
                       PRIM_MEDIA_PERMS_INTERACT,PRIM_MEDIA_PERM_NONE,
                       PRIM_MEDIA_PERMS_CONTROL, PRIM_MEDIA_PERM_NONE ] );
 
@@ -157,7 +156,7 @@ state hypno
         {
 
             if (message == "boo!")
-                {
+            {
             integer lenght = llGetListLength(gOneCard);
             if (counter == lenght)
                 { counter = 0;
@@ -167,32 +166,30 @@ state hypno
                 {
                 ++counter;
                 setURLtoList("");
-
                 }
-
-            }
             llRegionSay(MyChannel,"buu!");
+            }
+
             if (message == "baa!")
             {
             integer lenght = llGetListLength(gOneCard);
             if (counter == -lenght)
-                { counter = 0;
+                {
+                counter = 0;
                 llOwnerSay((string)lenght + " " + "Links Present");
-                 }
+                }
             if (counter != lenght)
                 {
                 --counter;
                 setURLtoList("");
-
                 }
-
             llRegionSay(MyChannel,"bii!");
-            if (message == "stand!")
-            {
-            llOwnerSay("Thank You Come Again!");
-            llResetScript();
             }
-    }
+            if (message == "stand!")
+                {
+                llOwnerSay("Thank You Come Again!");
+                llResetScript();
+                }
 }
     dataserver(key _query_id, string _data) //dataserver part of notecard reader
     {
