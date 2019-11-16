@@ -22,7 +22,7 @@ default
         llSitTarget(finalpos,finalrot);
 
        // llSitTarget(localpos , localrot );
-        }
+    }
     changed(integer change)
     {
         if (change & CHANGED_LINK)
